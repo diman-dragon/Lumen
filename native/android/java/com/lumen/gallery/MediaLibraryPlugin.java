@@ -310,11 +310,10 @@ public class MediaLibraryPlugin extends Plugin {
     // ------------------------------------------------------------------ helpers
 
     private Uri uri(long id, boolean video, boolean trashed) {
-        Uri u = ContentUris.withAppendedId(
+        return ContentUris.withAppendedId(
             video ? MediaStore.Video.Media.EXTERNAL_CONTENT_URI : MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             id
         );
-        return trashed ? MediaStore.setIncludeTrashed(u) : u;
     }
 
     private List<Uri> uris(PluginCall call, boolean trashed) {
