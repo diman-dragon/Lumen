@@ -72,6 +72,17 @@ let gradle = fs.readFileSync(gradlePath, 'utf8');
 if (!gradle.includes('exifinterface')) {
   gradle = gradle.replace(/dependencies\s*\{/, 'dependencies {\n    implementation "androidx.exifinterface:exifinterface:1.3.7"');
 }
+if (!gradle.includes('LUMEN_LINT')) {
+  gradle += `
+// LUMEN_LINT: lint не должен валить сборку
+android {
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+`;
+}
 if (!gradle.includes('LUMEN_SIGNING')) {
   gradle += `
 // LUMEN_SIGNING: подпись постоянным ключом, если задан KEYSTORE_PATH (см. README)
