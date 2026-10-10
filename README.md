@@ -25,16 +25,9 @@
 2. GitHub Actions (`.github/workflows/android.yml`) сам соберёт APK. Скачайте его на вкладке **Actions → последний запуск → Artifacts → lumen-apk**.
 3. Для релиза: `git tag v1.0.0 && git push --tags` — APK появится в Releases.
 
-### Постоянная подпись (чтобы APK обновлялся поверх старого)
+### Подпись
 
-Без ключа CI подписывает debug-ключом, который меняется при каждой сборке — обновление поверх не встанет. Один раз создайте ключ:
-
-```bash
-keytool -genkeypair -v -keystore lumen.jks -alias lumen -keyalg RSA -keysize 2048 -validity 10000
-base64 -w0 lumen.jks   # на macOS: base64 -i lumen.jks
-```
-
-В репозитории: **Settings → Secrets and variables → Actions** добавьте `ANDROID_KEYSTORE_B64` (вывод base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Тогда CI соберёт подписанный release-APK. `*.jks` уже в `.gitignore`.
+Ключ `signing/lumen.jks` лежит в репозитории и используется при каждой сборке, поэтому APK обновляются поверх друг друга. Пароли в `.github/workflows/android.yml`. Это ключ для разработки: перед публикацией в магазин создайте новый и храните его в секретах.
 
 ## Разработка в браузере
 

@@ -28,23 +28,17 @@ jobs:
       - name: Web build + generate Android project
         run: npm run android:prepare
 
+      # Ключ подписи лежит в репозитории (signing/lumen.jks) — проект в разработке, не публикуется.
       - name: Build APK
         working-directory: android
         env:
-          KEYSTORE_PATH: ${{ secrets.ANDROID_KEYSTORE_B64 != '' && format('{0}/lumen.jks', runner.temp) || '' }}
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          KS: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KEYSTORE_PATH: ${{ github.workspace }}/signing/lumen.jks
+          KEYSTORE_PASSWORD: S3vljBoBtOv5d5B4MMYyjRSR
+          KEY_ALIAS: lumen
+          KEY_PASSWORD: S3vljBoBtOv5d5B4MMYyjRSR
         run: |
-          if [ -n "$KS" ]; then
-            echo "$KS" | base64 -d > "$RUNNER_TEMP/lumen.jks"
-            ./gradlew assembleRelease --no-daemon
-            mkdir -p ../out && cp app/build/outputs/apk/release/*.apk ../out/lumen.apk
-          else
-            ./gradlew assembleDebug --no-daemon
-            mkdir -p ../out && cp app/build/outputs/apk/debug/app-debug.apk ../out/lumen.apk
-          fi
+          ./gradlew assembleRelease --no-daemon
+          mkdir -p ../out && cp app/build/outputs/apk/release/*.apk ../out/lumen.apk
 
       - uses: actions/upload-artifact@v4
         with:
